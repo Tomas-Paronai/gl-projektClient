@@ -115,4 +115,20 @@ public class HandlerDB {
     private void revertResultSet(ResultSet set) throws SQLException {
         while(set.previous());
     }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setDatabase(String database) {
+        this.database = database;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
