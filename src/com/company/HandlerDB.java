@@ -1,12 +1,15 @@
 package com.company;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /**
  * Created by tomas on 4/7/2016.
  */
 public class HandlerDB {
+
+    private final String dateFix = "?zeroDateTimeBehavior=convertToNull";
 
     private String url;
     private String database;
@@ -16,6 +19,13 @@ public class HandlerDB {
 
     private Connection dbConnection;
 
+    /**
+     *
+     * @param url Address to mysql server
+     * @param database Name of database
+     * @param user name of login user
+     * @param password password
+     */
     public HandlerDB(String url, String database, String user, String password) {
         this.url = "jdbc:mysql://" + url + "/";
         this.database = database;
@@ -26,7 +36,7 @@ public class HandlerDB {
 
     public boolean connect() {
         try {
-            dbConnection = DriverManager.getConnection(url+database,user,password);
+            dbConnection = DriverManager.getConnection(url+database+dateFix,user,password);
         } catch (SQLException e) {
             return false;
         }
@@ -39,11 +49,16 @@ public class HandlerDB {
         }
     }
 
-    public void execute(String query){
+    /**
+     * Pouzivat na SELECT. Vysledok je HashMap. Kluc je nazov stlpca a hodnota je ArrayList stringov hodnot v danom stlpci.
+     * @param query
+     * @return
+     */
+    public HashMap<String, ArrayList<String>> executeForResult(String query){
         Statement st;
         ResultSet res = null;
 
-        HashMap<String,String> result = new HashMap<>();
+        HashMap<String,ArrayList<String>> result = new HashMap<>();
 
         try {
 
@@ -52,7 +67,21 @@ public class HandlerDB {
                 res = st.executeQuery(query);
 
                 ResultSetMetaData rsmd = res.getMetaData();
+                int maxColumn = rsmd.getColumnCount();
 
+                for(int i = 1; i <= maxColumn; i++){
+
+                    String columnName = rsmd.getColumnName(i);
+                    ArrayList<String> values = new ArrayList<>();
+
+                    while(res.next()){
+                        values.add(res.getString(columnName));
+                    }
+                    result.put(columnName,values);
+
+                    revertResultSet(res);
+
+                }
 
                 disconnect();
             }
@@ -61,5 +90,29 @@ public class HandlerDB {
             e.printStackTrace();
         }
 
+        return result;
+    }
+
+    /**
+     * Pouzivat na manipulaciu s datami, cize INSERT, UPDATE a DELETE
+     * @param query
+     */
+    public void executeManipulate(String query){
+        Statement st;
+        try{
+
+            if(connect()){
+                st = dbConnection.createStatement();
+                st.executeUpdate(query);
+                disconnect();
+            }
+        }
+        catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void revertResultSet(ResultSet set) throws SQLException {
+        while(set.previous());
     }
 }
