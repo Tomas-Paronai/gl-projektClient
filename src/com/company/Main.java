@@ -1,4 +1,5 @@
 package com.company;
+import com.company.api.AddressReader;
 import com.company.api.HandlerDB;
 
 import java.io.BufferedWriter;
@@ -18,7 +19,8 @@ public class Main {
             employeeId = Integer.parseInt(args[0]);
         }
 
-        HandlerDB handlerDB = new HandlerDB("localhost:3306","employees","root","sovy");
+        AddressReader reader = new AddressReader();
+        HandlerDB handlerDB = new HandlerDB(reader.getData(AddressReader.URL),reader.getData(AddressReader.DB),reader.getData(AddressReader.USER),reader.getData(AddressReader.PASS));
 
         String query = "SELECT EXISTS(SELECT 1 FROM work_shift WHERE EmployeeId='"+employeeId+"' and `Type`='IN') as TMP";
         try {
