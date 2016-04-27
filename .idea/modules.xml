@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/cardReader.iml" filepath="$PROJECT_DIR$/cardReader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gl-projektClient.iml" filepath="$PROJECT_DIR$/gl-projektClient.iml" />
     </modules>
   </component>
 </project>
