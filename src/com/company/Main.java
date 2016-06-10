@@ -18,7 +18,7 @@ public class Main {
             employeeId = Integer.parseInt(args[0]);
         }
 
-        HandlerDB handlerDB = new HandlerDB("localhost:3306","employees","root","sovy");
+        HandlerDB handlerDB = new HandlerDB("localhost:3306","employees","root","1234");
 
         String query = "SELECT EXISTS(SELECT 1 FROM work_shift WHERE EmployeeId='"+employeeId+"' and `Type`='IN') as TMP";
         try {
